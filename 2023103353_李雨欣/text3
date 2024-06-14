@@ -1,0 +1,55 @@
+import random
+import string
+from functools import wraps
+
+def call_counter(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper.call_count += 1
+        return func(*args, **kwargs)
+    wrapper.call_count = 0
+    return wrapper
+
+@call_counter
+def randomize_element(element):
+    if isinstance(element, (list, tuple)):
+        return type(element)(randomize_element(x) for x in element)
+    elif isinstance(element, dict):
+        return {key: randomize_element(value) for key, value in element.items()}
+    elif isinstance(element, str):
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=len(element)))
+    elif isinstance(element, int):
+        return random.randint(0, 100)
+    elif isinstance(element, float):
+        return random.uniform(0, 100)
+    elif hasattr(element, '__dict__'):
+        for attr in vars(element):
+            setattr(element, attr, randomize_element(getattr(element, attr)))
+        return element
+    else:
+        return element
+
+def randomize_input(func):
+    @wraps(func)
+    @call_counter
+    def wrapper(*args, **kwargs):
+        new_args = [randomize_element(arg) for arg in args]
+        new_kwargs = {key: randomize_element(value) for key, value in kwargs.items()}
+        return func(*new_args, **new_kwargs)
+    return wrapper
+
+@randomize_input
+def my_function(*args, **kwargs):
+    print("Args:", args)
+    print("Kwargs:", kwargs)
+
+def print_call_counts():
+    print(f"randomize_element was called {randomize_element.call_count} times.")
+    print(f"randomize_input wrapper was called {my_function.call_count} times.")
+
+# 测试
+my_function((1, 'a', 3.5), [21, [23, 556]], {'key1': 'value1', 'key2': 42}, custom_obj=type('Custom', (), {'attr1': 'value1', 'attr2': 2})())
+
+# 打印调用次数
+print_call_counts()
+

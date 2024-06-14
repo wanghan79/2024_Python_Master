@@ -1,0 +1,5 @@
+{
+    "int": [ "int", 5, 8 ],
+    "float": [ "float", -100, 100 ],
+    "str": [ "string", "key:[A-Z]{5}" ]
+}

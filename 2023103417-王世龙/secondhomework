@@ -44,8 +44,8 @@ def datasampling(num, struct):
 
 # 测试数据
 structure = {
-    '1': {'datatype': 'float', 'datarange': [18, 65]},
-    '2': {'datatype': 'float', 'datarange': [18, 65]},
+    '1': {'datatype': 'float', 'datarange': [6, 66]},
+    '2': {'datatype': 'float', 'datarange': [6, 66]},
 }
 
 f = datasampling(num=2, struct=structure)

@@ -1,4 +1,3 @@
-
 import random
 
 def datasampling(num, struct):
@@ -62,3 +61,4 @@ struct1 = {
 
 samples1 = datasampling(num=3, struct=struct1)
 print(samples1)
+
