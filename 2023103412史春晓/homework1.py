@@ -1,7 +1,6 @@
 import random
 
 def generate_random_value(data_type, **kwargs):
-    """生成基于数据类型和附加关键字参数的随机值。"""
     if data_type == int:
         return random.randint(kwargs.get('int_min', 1), kwargs.get('int_max', 100))
     elif data_type == float:
