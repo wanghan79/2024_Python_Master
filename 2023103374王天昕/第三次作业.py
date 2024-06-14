@@ -1,44 +1,36 @@
 import random
-from functools import wraps
-import time
 
-from python.test import mean,sum
-
-
-def addLogging(decPara):
-    def decrator(func):
-        def wrapper(*args,**kwargs):
-            print('%s is running'% func.__name__)
-            sum=0
-            for arg in args:
-                sum = sum + arg
-            print('the sum  is %d' % sum)
-            # average = sum /len(args)
-            # print('the average  is %d' % average)
-            return func(*args,**kwargs)
-        return wrapper#wrapper(*args,**kwargs)
-    return decrator#input:func,return:wrapper(*args,**kwargs)
+def addLogging(level):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            print(f'{func.__name__} is running at level {level}')
+            total_sum = sum(args)  # 计算总和
+            print(f'The sum is {total_sum}')
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 class RandomDataStatistics:
     def __init__(self, count=10):
         self.random_numbers = []
         self.count = count
 
-    @addLogging('a level')
-    def sum(x, y, *args):
-        return sum
+    @staticmethod
+    @addLogging('high')
+    def sum(*args):
+        return sum(args)
 
-    @addLogging('a level')
-    def mean(x, y, *args):
-        sum = 0
-        average=0
-        for arg in args:
-            sum = sum + arg
-            average = sum / len(args)
-            print('the average  is %d' % average)
-        return mean
-
+    @staticmethod
+    @addLogging('low')
+    def mean(*args):
+        total_sum = sum(args)
+        avg = total_sum / len(args)
+        print(f'The average is {avg}')
+        return avg
 
 # 使用示例
-sum(3,3,8)#计算总和
-mean(3,3,9)#计算均值
+if __name__ == "__main__":
+    rds = RandomDataStatistics()
+
+    rds.sum(3, 3, 8)  # 计算总和
+    rds.mean(3, 3, 9)  # 计算均值
