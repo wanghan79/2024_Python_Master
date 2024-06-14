@@ -1,29 +1,35 @@
-import homework1
-import homework2
-import homework3
+# 导入模块，这里假设homework1, homework2, homework3是已经定义好的模块
+import homework1 as hw1
+import homework2 as hw2
+import homework3 as hw3
 
-
-def run():
+def main():
     while True:
-        print("请按需求输入数字进行对应模块的测试：")
-        print('输入1：执行homework1：执行随机结构生成函数的封装示例')
-        print('输入2：执行homework2：随机结构生成类封装调用示例')
-        print('输入3：执行homework3：统计方法修饰类实现')
-        print('输入q：退出程序')
+        # 显示用户菜单
+        print("请选择您想执行的模块：")
+        print('1 - 执行随机结构生成函数封装示例')
+        print('2 - 执行随机结构生成类封装调用示例')
+        print('3 - 统计方法修饰类实现')
+        print('q - 退出程序')
 
+        # 接收用户输入
+        user_choice = input("请输入选项：")
+        
+        # 根据用户输入执行相应模块的函数
         try:
-            x = input()
-            if x == '1':
-                homework1.run()
-            elif x == '2':
-                homework2.run()
-            elif x == '3':
-                homework3.run()
-            elif x == 'q':
+            if user_choice == '1':
+                hw1.run()
+            elif user_choice == '2':
+                hw2.run()
+            elif user_choice == '3':
+                hw3.run()
+            elif user_choice == 'q':
+                print("退出程序。")
                 break
             else:
-                print('请输入正确的命令')
-        except:
-            raise Exception('Error!')
+                print("无效的输入，请重新输入。")
+        except ValueError:
+            print("输入错误，请输入数字。")
 
-run()
+if __name__ == "__main__":
+    main()
