@@ -7,7 +7,6 @@ class DataProcessor:
         self.config = kwargs
 
     def generate_random_value(self, data_type):
-        """根据指定的数据类型生成随机值。"""
         if data_type == 'int':
             return random.randint(self.config.get('int_min', 1), self.config.get('int_max', 100))
         elif data_type == 'float':
@@ -20,7 +19,6 @@ class DataProcessor:
             raise ValueError(f"Unsupported data type: {data_type}")
 
     def generate_data(self, structure):
-        """递归地生成数据，根据提供的结构描述。"""
         if isinstance(structure, dict):
             return {key: self.generate_data(value) for key, value in structure.items()}
         elif isinstance(structure, list):
