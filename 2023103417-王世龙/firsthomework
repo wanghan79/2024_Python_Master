@@ -31,7 +31,7 @@ def datasampling(num, struct):
 struct1 = {
     'fieldname1': {
         'datatype': 'int',
-        'datarange': [1, 200]
+        'datarange': [1, 666]
     },
     'fieldname2': {
         'datatype': 'str',
@@ -40,7 +40,7 @@ struct1 = {
     },
     'fieldname3': {
         'datatype': 'float',
-        'datarange': [0, 2]
+        'datarange': [0, 6]
     }
 }
 
