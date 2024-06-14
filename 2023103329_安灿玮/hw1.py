@@ -1,4 +1,3 @@
-# hw1.py
 import random
 
 
@@ -8,37 +7,43 @@ def generate_random_structure(**kwargs):
     """
     result = []
 
-    # 获取样本数量参数，如果没有提供则抛出异常
-    n = kwargs.get('num', -1)
-    if n == -1:
-        raise Exception('Missing Parameter: num!')
+    # 检查并获取样本数量参数，如果没有提供则抛出异常
+    try:
+        n = kwargs['num']
+    except KeyError:
+        raise ValueError("Missing parameter 'num'!")
 
-    # 获取结构参数，如果没有提供则抛出异常
-    struct = kwargs.get('struct', None)
-    if struct is None:
-        raise Exception('Missing Parameter: struct!')
+    # 检查样本数量参数是否为非负整数
+    if not isinstance(n, int) or n < 0:
+        raise ValueError("Parameter 'num' must be a non-negative integer!")
+
+    # 检查并获取结构参数，如果没有提供或不是字典类型则抛出异常
+    try:
+        struct = kwargs['struct']
+    except KeyError:
+        raise ValueError("Missing parameter 'struct'!")
+    if not isinstance(struct, dict):
+        raise TypeError("Parameter 'struct' must be a dictionary!")
 
     # 生成指定数量的样本
     for _ in range(n):
-        # 初始化每个样本的元素列表
-        element = []
+        # 初始化每个样本的元素字典
+        element = {}
         for key, value in struct.items():
             # 根据数据类型生成随机数或随机字符串
             if value['datatype'] == 'int':
-                it = iter(value['datarange'])
-                tmp = random.randint(next(it), next(it))
+                element[key] = random.randint(*value['datarange'])
             elif value['datatype'] == 'float':
-                it = iter(value['datarange'])
-                tmp = random.uniform(next(it), next(it))
+                element[key] = random.uniform(*value['datarange'])
             elif value['datatype'] == 'str':
-                tmp = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value['len']))
+                element[key] = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value.get('len', 1)))
             elif value['datatype'] == 'struct':
                 # 递归调用generate_random_structure生成嵌套结构
-                tmp = generate_random_structure(num=1, struct=value['datarange'])[0]
+                element[key] = generate_random_structure(num=1, struct=value['datarange'])[0]
             else:
-                break  # 如果数据类型不支持，退出循环
-            element.append(tmp)  # 将生成的随机值添加到元素列表中
-        result.append(element)  # 将每个样本的元素列表添加到结果列表中
+                raise ValueError(f"Unsupported datatype '{value['datatype']}' for field '{key}'")
+
+        result.append(element)  # 将生成的样本字典添加到结果列表中
 
     return result  # 返回生成的样本列表
 
@@ -54,9 +59,14 @@ def run():
         "field4": {"datatype": "struct", "datarange": {
             "nested1": {"datatype": "int", "datarange": (100, 200)},
             "nested2": {"datatype": "str", "datarange": "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "len": 3}
+        }},
+        "field5": {"datatype": "struct", "datarange": {
+            "nested3": {"datatype": "float", "datarange": (50.0, 100.0)},
+            "nested4": {"datatype": "str", "datarange": "!@#$%^&*()_+", "len": 4}
         }}
     }
 
+    # 生成10个样本
     samples = generate_random_structure(num=10, struct=sample_structure)
     print("Generated Samples:")
     for sample in samples:
