@@ -1,1 +1,64 @@
 
+import random
+
+def datasampling(num, struct):
+    """
+    生成指定数量和结构的随机数据样本.
+    
+    :param num: 生成的数据样本数量
+    :param struct: 描述数据结构的字典
+    :return: 包含随机数据样本的列表
+    """
+    if not isinstance(num, int) or num <= 0:
+        raise ValueError('Parameter "num" must be a positive integer.')
+    
+    if not isinstance(struct, dict) or not struct:
+        raise ValueError('Parameter "struct" must be a non-empty dictionary.')
+
+    result = []
+    for _ in range(num):
+        element = []
+        for field, config in struct.items():
+            datatype = config.get('datatype')
+            if datatype == 'int':
+                datarange = config.get('datarange')
+                if not datarange or len(datarange) != 2:
+                    raise ValueError(f'Invalid datarange for field {field}')
+                tmp = random.randint(datarange[0], datarange[1])
+            elif datatype == 'float':
+                datarange = config.get('datarange')
+                if not datarange or len(datarange) != 2:
+                    raise ValueError(f'Invalid datarange for field {field}')
+                tmp = random.uniform(datarange[0], datarange[1])
+            elif datatype == 'str':
+                datarange = config.get('datarange')
+                length = config.get('len')
+                if not datarange or not length:
+                    raise ValueError(f'Invalid datarange or length for field {field}')
+                tmp = ''.join(random.SystemRandom().choice(datarange) for _ in range(length))
+            else:
+                raise ValueError(f'Unsupported datatype for field {field}')
+            element.append(tmp)
+        result.append(element)
+
+    return result
+
+# 测试数据
+struct1 = {
+    'fieldname1': {
+        'datatype': 'int',
+        'datarange': [1, 200]
+    },
+    'fieldname2': {
+        'datatype': 'str',
+        'datarange': 'abcdefghijklmnopqrstuvwxyz',
+        'len': 4
+    },
+    'fieldname3': {
+        'datatype': 'float',
+        'datarange': [0, 2]
+    }
+}
+
+samples1 = datasampling(num=3, struct=struct1)
+print(samples1)
