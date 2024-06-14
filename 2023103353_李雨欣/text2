@@ -1,54 +1,62 @@
 import random
+from functools import wraps
 
-def dataProcess(*opts):
+def process_data(*options):
     def decorator(func):
-        def wrapper(*args, **kwargs):
-            data = func(*args, **kwargs)
-            result = {'origin_data': data}
-            for opt in opts:
-                if opt == 'AVG':
-                    total_sum = sum(sum(_) for _ in data)
-                    result['AVG'] = total_sum / (len(data) * len(data[0]))
-                if opt == 'SUM':
-                    total_sum = sum(sum(_) for _ in data)
-                    result['SUM'] = total_sum
-            return result
+        @wraps(func)
+        def wrapper(**kwargs):
+            sampled_data = func(**kwargs)
+            processed_results = {'origin_data': sampled_data}
+            
+            for option in options:
+                if option == 'AVG':
+                    total_sum = sum(sum(row) for row in sampled_data)
+                    num_elements = sum(len(row) for row in sampled_data)
+                    processed_results['AVG'] = total_sum / num_elements if num_elements else 0
+                if option == 'SUM':
+                    total_sum = sum(sum(row) for row in sampled_data)
+                    processed_results['SUM'] = total_sum
+            
+            return processed_results
+        
         return wrapper
     return decorator
 
 class RandomDataGenerator:
-    def __init__(self, num, struct):
-        self.num = num
-        self.struct = struct
+    def __init__(self, num_samples, data_structure):
+        self.num_samples = num_samples
+        self.data_structure = data_structure
 
-    @dataProcess('SUM', 'AVG')
-    def datasampling(self):
-        result = []
-        for _ in range(self.num):
-            element = []
-            for key, value in self.struct.items():
-                if value['datatype'] == 'int':
-                    it = iter(value['datarange'])
-                    tmp = random.randint(next(it), next(it))
-                elif value['datatype'] == 'float':
-                    it = iter(value['datarange'])
-                    tmp = random.uniform(next(it), next(it))
-                elif value['datatype'] == 'str':
-                    tmp = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value['len']))
-                else:
-                    raise ValueError(f"Unsupported datatype for field {key}")
-                element.append(tmp)
-            result.append(element)
-        return result
+    @process_data('SUM', 'AVG')
+    def generate(self):
+        if self.num_samples < 1:
+            raise ValueError('num_samples must be at least 1.')
+        if not self.data_structure:
+            raise ValueError('data_structure must be provided.')
+
+        samples = [
+            [self.sample_field(self.data_structure[key]) for key in self.data_structure] 
+            for _ in range(self.num_samples)
+        ]
+        return samples
+
+    def sample_field(self, field_spec):
+        if field_spec['datatype'] == 'int':
+            return random.randint(*field_spec['datarange'])
+        elif field_spec['datatype'] == 'float':
+            return random.uniform(*field_spec['datarange'])
+        elif field_spec['datatype'] == 'str':
+            return ''.join(random.SystemRandom().choice(field_spec['datarange']) for _ in range(field_spec['len']))
+        else:
+            raise ValueError(f"Unsupported datatype: {field_spec['datatype']}")
 
 # 测试代码
 if __name__ == '__main__':
-    structure = {
+    data_template = {
         '1': {'datatype': 'float', 'datarange': [18, 65]},
         '2': {'datatype': 'float', 'datarange': [18, 65]},
     }
 
-    generator = RandomDataGenerator(num=2, struct=structure)
-    result = generator.datasampling()
+    generator = RandomDataGenerator(num_samples=2, data_structure=data_template)
+    result = generator.generate()
     print(result)
-
