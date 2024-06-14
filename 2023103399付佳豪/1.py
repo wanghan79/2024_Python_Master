@@ -24,14 +24,14 @@ def create_random_profiles(count, profile_structure):
 
 # Template data structure for profiles
 profile_template = {
-    "name": "Alice",
-    "age": 20,
+    "name": "MrFu",
+    "age": 22,
     "major": "Computer Science",
-    "gpa": 3.5,
+    "gpa": 3.6,
     "courses": ["Math", "Programming", "Data Structures"],
     "contact": {
-        "email": "alice@example.com",
-        "phone": "123-456-7890"
+        "email": "nenu.Fu.edu.cn",
+        "phone": "1432597504"
     }
 }
 
