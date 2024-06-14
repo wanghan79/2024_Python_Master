@@ -1,27 +1,27 @@
 import random
 
-class StructDataSampler:
-    def __init__(self, num=0, struct=None):
-        self.num = num
-        self.struct = struct
+class RandomDataGenerator:
+    def __init__(self):
+        pass
 
-    @staticmethod
-    def generate_int(datarange):
+    def generate_int(self, datarange):
         return random.randint(datarange[0], datarange[1])
 
-    @staticmethod
-    def generate_float(datarange):
+    def generate_float(self, datarange):
         return random.uniform(datarange[0], datarange[1])
 
-    @staticmethod
-    def generate_str(datarange, length):
+    def generate_str(self, datarange, length):
         return ''.join(random.SystemRandom().choice(datarange) for _ in range(length))
 
-    def sample(self):
+class StructuredDataSampler(RandomDataGenerator):
+    def __init__(self):
+        super().__init__()
+
+    def struct_data_sampling(self, num, struct):
         result = []
-        for _ in range(self.num):
+        for _ in range(num):
             element = {}
-            for key, value in self.struct.items():
+            for key, value in struct.items():
                 if value['datatype'] == 'int':
                     tmp = self.generate_int(value['datarange'])
                 elif value['datatype'] == 'float':
@@ -34,16 +34,18 @@ class StructDataSampler:
             result.append(element)
         return result
 
-# Example usage:
-if __name__ == "__main__":
+def show(data):
+    for element in data:
+        print(element)
+
+if __name__ == '__main__':
     try:
-        sampler = StructDataSampler(num=3, struct={
+        sampler = StructuredDataSampler()
+        demo = sampler.struct_data_sampling(num=3, struct={
             '整数': {'datatype': 'int', 'datarange': [0, 500]},
             '浮点数': {'datatype': 'float', 'datarange': [0.0, 1000.0]},
             '字符串': {'datatype': 'str', 'datarange': 'abc', 'len': 10}
         })
-        sampled_data = sampler.sample()
-        for data in sampled_data:
-            print(data)
+        show(demo)
     except (TypeError, KeyError) as e:
         print(f"输入正确的参数，格式为:num=整数, struct={{'data1':{{'datatype':'int or float', 'datarange':[0,100]}}}}: {e}")
