@@ -30,21 +30,16 @@ def random_data_generator(template, count):
         yield random_structure(template)
 
 # Template data structure
-same_data= {
-    "name": "Bob",  # 修改姓名为"Bob"
-    "age": 25,  # 修改年龄为25岁
-    "scores": [15, 25, 35],  # 修改分数列表
+same_data = {
+    "name": fake.name(),
+    "age": 18,
+    "scores": [10, 20, 30],
     "info": {
-        "city": "Los Angeles",  # 修改城市为"Los Angeles"
-        "email": "bob@example.com"  # 修改邮箱
+        "city": "hunan",
+        "email": "alice@example.com"
     },
-    "zhuanye": "jishuxitong"  # 修改专业
+    "zhuanye": "jisuanji"
 }
-
-# Generate random data records based on the modified template
-random_data = generate_original_data(10, same_data)
-for data in random_data:
-    print(data)
 
 # Generate random data records using a generator
 for data in random_data_generator(same_data, 10):
