@@ -1,0 +1,52 @@
+import random
+
+def dataProcess(*args):
+    def decorator(func):
+        def wrapper(*func_args, **func_kwargs):
+            data = func(*func_args, **func_kwargs)
+            result = {'origin_data': data}
+            for opt in args:
+                if opt == 'AVG':
+                    total_sum = sum(sum(element) for element in data if isinstance(element, (list, tuple)))
+                    result['AVG'] = total_sum / (len(data) * len(data[0]))
+                if opt == 'SUM':
+                    total_sum = sum(sum(element) for element in data if isinstance(element, (list, tuple)))
+                    result['SUM'] = total_sum
+            return result
+        return wrapper
+    return decorator
+
+@dataProcess('SUM', 'AVG')
+def datasampling(num, struct):
+    if num <= 0:
+        raise ValueError('Parameter "num" must be greater than 0!')
+    
+    if not struct:
+        raise ValueError('Parameter "struct" must not be empty!')
+
+    result = []
+
+    for _ in range(num):
+        element = []
+        for key, value in struct.items():
+            if value['datatype'] == 'int':
+                tmp = random.randint(*value['datarange'])
+            elif value['datatype'] == 'float':
+                tmp = random.uniform(*value['datarange'])
+            elif value['datatype'] == 'str':
+                tmp = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value['len']))
+            else:
+                raise ValueError(f"Unsupported datatype {value['datatype']}")
+            element.append(tmp)
+        result.append(element)
+
+    return result
+
+# 测试数据
+structure = {
+    '1': {'datatype': 'float', 'datarange': [18, 65]},
+    '2': {'datatype': 'float', 'datarange': [18, 65]},
+}
+
+f = datasampling(num=2, struct=structure)
+print(f)
