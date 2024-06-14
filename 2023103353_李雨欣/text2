@@ -1,1 +1,54 @@
+import random
+
+def dataProcess(*opts):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            data = func(*args, **kwargs)
+            result = {'origin_data': data}
+            for opt in opts:
+                if opt == 'AVG':
+                    total_sum = sum(sum(_) for _ in data)
+                    result['AVG'] = total_sum / (len(data) * len(data[0]))
+                if opt == 'SUM':
+                    total_sum = sum(sum(_) for _ in data)
+                    result['SUM'] = total_sum
+            return result
+        return wrapper
+    return decorator
+
+class RandomDataGenerator:
+    def __init__(self, num, struct):
+        self.num = num
+        self.struct = struct
+
+    @dataProcess('SUM', 'AVG')
+    def datasampling(self):
+        result = []
+        for _ in range(self.num):
+            element = []
+            for key, value in self.struct.items():
+                if value['datatype'] == 'int':
+                    it = iter(value['datarange'])
+                    tmp = random.randint(next(it), next(it))
+                elif value['datatype'] == 'float':
+                    it = iter(value['datarange'])
+                    tmp = random.uniform(next(it), next(it))
+                elif value['datatype'] == 'str':
+                    tmp = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value['len']))
+                else:
+                    raise ValueError(f"Unsupported datatype for field {key}")
+                element.append(tmp)
+            result.append(element)
+        return result
+
+# 测试代码
+if __name__ == '__main__':
+    structure = {
+        '1': {'datatype': 'float', 'datarange': [18, 65]},
+        '2': {'datatype': 'float', 'datarange': [18, 65]},
+    }
+
+    generator = RandomDataGenerator(num=2, struct=structure)
+    result = generator.datasampling()
+    print(result)
 
