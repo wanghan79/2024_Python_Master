@@ -13,7 +13,7 @@ def generate_float(datarange):
 def generate_str(datarange, length):
     return ''.join(random.choice(datarange) for _ in range(length))
 
-# 生成器生成随机结构
+# 结构化数据生成器函数
 def struct_data_generator(num, struct_dict):
     for _ in range(num):
         data_sample = {}
@@ -41,3 +41,10 @@ if __name__ == '__main__':
             '字符串': {'datatype': 'str', 'datarange': string.ascii_letters, 'len': 10}
         }
         num = 3
+
+        # 调用生成器函数
+        demo_generator = struct_data_generator(num, struct_dict)
+        show(demo_generator)
+
+    except (TypeError, KeyError) as e:
+        print(f"输入正确的参数，格式为:num=整数, struct={{'data1':{{'datatype':'int or float', 'datarange':[0,100]}}}}: {e}")
