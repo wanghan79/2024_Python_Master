@@ -1,0 +1,48 @@
+import random
+
+def datasampling(num, struct):
+    if num <= 0:
+        raise ValueError('Parameter "num" must be greater than 0!')
+    
+    if not struct:
+        raise ValueError('Parameter "struct" must not be empty!')
+    
+    result = []
+
+    for _ in range(num):
+        element = []
+        for key, value in struct.items():
+            if value['datatype'] == 'int':
+                it = iter(value['datarange'])
+                tmp = random.randint(next(it), next(it))
+            elif value['datatype'] == 'float':
+                it = iter(value['datarange'])
+                tmp = random.uniform(next(it), next(it))
+            elif value['datatype'] == 'str':
+                tmp = ''.join(random.SystemRandom().choice(value['datarange']) for _ in range(value['len']))
+            else:
+                raise ValueError(f"Unsupported datatype {value['datatype']}")
+            element.append(tmp)
+        result.append(element)
+
+    return result
+
+# 测试数据
+struct1 = {
+    'fieldname1': {
+        'datatype': 'int',
+        'datarange': [1, 200]
+    },
+    'fieldname2': {
+        'datatype': 'str',
+        'datarange': 'abcdefghijklmnopqrstuvwxyz',
+        'len': 4
+    },
+    'fieldname3': {
+        'datatype': 'float',
+        'datarange': [0, 2]
+    }
+}
+
+samples1 = datasampling(num=3, struct=struct1)
+print(samples1)
