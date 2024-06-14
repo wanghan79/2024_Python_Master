@@ -41,7 +41,6 @@ class DataProcessor:
             results.append(np.std(data))
         return results
 
-# 使用示例
 if __name__ == '__main__':
     processor = DataProcessor(int_min=10, int_max=500, float_min=0.1, float_max=50.0, str_len=8)
     data_structure = {
@@ -51,6 +50,5 @@ if __name__ == '__main__':
     random_data = processor.generate_data(data_structure)
     print("Generated Data:", random_data)
 
-    # 假设随机生成的数据结构是一个列表
     results = processor.process_data(random_data['values'], 'sum', 'mean', 'std')
     print("Processed Results:", results)
