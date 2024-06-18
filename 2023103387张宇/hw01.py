@@ -67,6 +67,7 @@ def generate_random_structure(*args, **kwargs):
         # 生成列表
         random_structure = random_elements
     elif structure_type == 'tuple':
+        # 生成元组
         random_structure = tuple(random_elements)
     else:
         # 生成字典，键为随机生成的字符串，值为随机元素
