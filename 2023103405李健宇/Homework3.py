@@ -21,7 +21,7 @@ def stats_decorator(func):
 class RandomDataGenerator:
     @staticmethod
     @stats_decorator
-    def generate_random_data(structure, size=1):
+    def generate_data(structure, size=1):
         def generate_value(value_type):
             if isinstance(value_type, tuple):
                 base_type = value_type[0]
@@ -52,7 +52,7 @@ class RandomDataGenerator:
             elif value_type == 'datetime':
                 return datetime.datetime.now()
             else:
-                return None  
+                return None
 
         def generate_structure(struct):
             if isinstance(struct, dict):
@@ -66,24 +66,17 @@ class RandomDataGenerator:
 
         return [generate_structure(structure) for _ in range(size)]
 
-
-
 structure = {
-    "name": ("str", 5, 15), 
-    "student_id": ("int", 1000, 9999),  
+    "name": ("str", 5, 15),
+    "student_id": ("int", 1000, 9999),
     "major": "str",
     "advisor": "str",
-    "contact": ("str", 10, 20),  #
+    "contact": ("str", 10, 20),
     "target_company": "str",
     "research_area": "str",
     "enrollment_date": ("datetime", datetime.datetime(2010, 1, 1), datetime.datetime(2020, 12, 31))
 }
 
 generator = RandomDataGenerator()
-random_students = generator.generate_random_data(structure, size=1000)
+random_students = generator.generate_data(structure, size=1000)
 print(random_students[:5])  # 打印前五个生成的随机学生信息
-
-# 打印统计信息
-print(f"Function calls: {generator.generate_random_data.calls}")
-print(f"Total time taken: {generator.generate_random_data.total_time:.4f} seconds")
-
