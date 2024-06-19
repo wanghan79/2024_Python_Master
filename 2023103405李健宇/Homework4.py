@@ -5,7 +5,7 @@ import datetime
 
 class RandomDataGenerator:
     @staticmethod
-    def generate_random_data(structure, size=1):
+    def generate_data(structure, size=1):
         def generate_value(value_type):
             if isinstance(value_type, tuple):
                 base_type = value_type[0]
@@ -51,7 +51,6 @@ class RandomDataGenerator:
         for _ in range(size):
             yield generate_structure(structure)
 
-
 structure = {
     "name": ("str", 5, 15),
     "student_id": ("int", 1000, 9999),
@@ -64,9 +63,8 @@ structure = {
 }
 
 generator = RandomDataGenerator()
-random_student_generator = generator.generate_random_data(structure, size=1000)
+random_student_generator = generator.generate_data(structure, size=1000)
 
 # 打印前五个生成的随机学生信息
 for _ in range(5):
     print(next(random_student_generator))
-
