@@ -1,29 +1,45 @@
-import homework1
-import homework2
-import homework3
+# 随机结构的生成器实现
+import random
+from functools import wraps
 
 
-def run():
-    while True:
-        print("请按需求输入数字进行对应模块的测试：")
-        print('输入1：执行homework1：执行随机结构生成函数的封装示例')
-        print('输入2：执行homework2：随机结构生成类封装调用示例')
-        print('输入3：执行homework3：统计方法修饰类实现')
-        print('输入q：退出程序')
+class RandomDataGenerator:
+    def __init__(self):
+        pass
 
-        try:
-            x = input()
-            if x == '1':
-                homework1.run()
-            elif x == '2':
-                homework2.run()
-            elif x == '3':
-                homework3.run()
-            elif x == 'q':
-                break
+    def validate_structure(func):
+        def wrapper(self, structure, *args, **kwargs):
+
+            valid_types = (int, float, str, dict, list, tuple, set)
+            if not isinstance(structure, valid_types):
+                raise ValueError("Invalid data structure. Must be one of: int, float, str, dict, list, tuple, set.")
+            return func(self, structure, *args, **kwargs)
+
+        return wrapper
+
+    def generate_random_data(self, structure, *args, **kwargs):
+        def generate_random_item(item, *args, **kwargs):
+            if isinstance(item, int):
+                return random.randint(*args)
+            elif isinstance(item, float):
+                return random.uniform(*args)
+            elif isinstance(item, str):
+                return ''.join(random.choices(kwargs['charset'], k=len(item)))
+            elif isinstance(item, dict):
+                return {key: generate_random_item(value, *args, **kwargs) for key, value in item.items()}
+            elif isinstance(item, list):
+                return [generate_random_item(element, *args, **kwargs) for element in item]
+            elif isinstance(item, tuple):
+                return tuple(generate_random_item(element, *args, **kwargs) for element in item)
+            elif isinstance(item, set):
+                return {generate_random_item(element, *args, **kwargs) for element in item}
             else:
-                print('请输入正确的命令')
-        except:
-            raise Exception('Error!')
+                raise ValueError(f"Unsupported data type: {type(item)}")
 
-run()
+        return generate_random_item(structure, *args, **kwargs)
+
+
+structure = {'a': [8, 5.2, 'abc', True], 'b': (1, 2, 3), 'c': {'x', 'y', 'z'}}
+generator = RandomDataGenerator()
+random_data = generator.generate_random_data(structure, 1, 100, charset='bvhsfcfvbdfbvebvvwxyz')
+print(random_data)
