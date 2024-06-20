@@ -1,3 +1,4 @@
+#随机结构生成函数封装
 import random
 
 def datasampling(**kwargs):
