@@ -1,3 +1,4 @@
+#随机结构生成类封装
 import random
 
 def dataProcess(*args):
