@@ -1,37 +1,45 @@
+#统计方法修饰器实现
 import random
-import string
 from functools import wraps
 
-def randomize_input(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        new_args = [randomize_element(arg) for arg in args]
-        new_kwargs = {key: randomize_element(value) for key, value in kwargs.items()}
-        return func(*new_args, **new_kwargs)
-    return wrapper
 
-def randomize_element(element):
-    if isinstance(element, (list, tuple)):
-        return type(element)(randomize_element(x) for x in element)
-    elif isinstance(element, dict):
-        return {key: randomize_element(value) for key, value in element.items()}
-    elif isinstance(element, str):
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=len(element)))
-    elif isinstance(element, int):
-        return random.randint(0, 100)
-    elif isinstance(element, float):
-        return random.uniform(0, 100)
-    elif hasattr(element, '__dict__'):
-        for attr in vars(element):
-            setattr(element, attr, randomize_element(getattr(element, attr)))
-        return element
-    else:
-        return element
+class RandomDataGenerator:
+    def __init__(self):
+        pass
 
-@randomize_input
-def my_function(*args, **kwargs):
-    print("Args:", args)
-    print("Kwargs:", kwargs)
+    def validate_structure(func):
+        def wrapper(self, structure, *args, **kwargs):
 
-# 测试
-my_function((1, 'a', 3.5), [21,[23,556]],{'key1': 'value1', 'key2': 42}, custom_obj=type('Custom', (), {'attr1': 'value1', 'attr2': 2})())
+            valid_types = (int, float, str, dict, list, tuple, set)
+            if not isinstance(structure, valid_types):
+                raise ValueError("Invalid data structure. Must be one of: int, float, str, dict, list, tuple, set.")
+            return func(self, structure, *args, **kwargs)
+
+        return wrapper
+
+    def generate_random_data(self, structure, *args, **kwargs):
+        def generate_random_item(item, *args, **kwargs):
+            if isinstance(item, int):
+                return random.randint(*args)
+            elif isinstance(item, float):
+                return random.uniform(*args)
+            elif isinstance(item, str):
+                return ''.join(random.choices(kwargs['charset'], k=len(item)))
+            elif isinstance(item, dict):
+                return {key: generate_random_item(value, *args, **kwargs) for key, value in item.items()}
+            elif isinstance(item, list):
+                return [generate_random_item(element, *args, **kwargs) for element in item]
+            elif isinstance(item, tuple):
+                return tuple(generate_random_item(element, *args, **kwargs) for element in item)
+            elif isinstance(item, set):
+                return {generate_random_item(element, *args, **kwargs) for element in item}
+            else:
+                raise ValueError(f"Unsupported data type: {type(item)}")
+
+        return generate_random_item(structure, *args, **kwargs)
+
+
+structure = {'a': [10, 5.0, 'abc', True], 'b': (1, 2, 3), 'c': {'x', 'y', 'z'}}
+generator = RandomDataGenerator()
+random_data = generator.generate_random_data(structure, 1, 100, charset='abcdefghijklmnopqrstuvwxyz')
+print(random_data)
