@@ -1,0 +1,20 @@
+import dataSampling.f_random
+import dataSampling
+
+import decorator.decorate
+import decorator
+
+import Factory.factory
+import Factory
+
+def homework1():
+    result = dataSampling.f_random.get_random(((1, 100), int), ((0.0, 100.0), float), ((8, 10), str),
+                                     (((2022103000, 2022103999), (6, 15)), tuple), (((2, 6), int), list),
+                                     (((2, 6), str), list))
+    num = len(result)
+    print("随机产生的随机数如下：")
+    for i in range(num):
+        print(result[i])
+if __name__ == '__main__':
+    print("展示作业1：")
+    homework1()
