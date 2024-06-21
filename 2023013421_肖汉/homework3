@@ -1,0 +1,22 @@
+import dataSampling.f_random
+import dataSampling
+
+import decorator.decorate
+import decorator
+
+import Factory.factory
+import Factory
+
+def homework3():
+    ob = dataSampling.f_random.get_random(((1, 100), int))
+    str1 = ["svm", "rf", "cnn", "rnn"]
+    str2 = ["acc", "mcc", "f1", "recall"]
+    ##print(ob)
+    for s1 in str1:
+        for s2 in str2:
+            print("随机值:", ob, ";  修饰方式:", s1, " ", s2)
+            Factory.factory.solve(s1, s2, ob)
+
+if __name__ == '__main__':
+    print("展示作业3：")
+    homework3()
